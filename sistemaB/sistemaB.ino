@@ -40,19 +40,14 @@ void loop() {
   // temp <20º desliga
   
   temp = analogRead(tempPin); // le valor do sensor de temperatura
-  //temp = (temp * 5 * 100.0)/1024.0; // converte o valor em uma temperatura em ºC
+  
+  // converte o valor em uma temperatura em ºC
   temp = temp * 5 / 1024;
   temp = (temp - 0.5) * 100;
   
   lcd.setCursor(6, 0);
   lcd.print("Fan: ");
   Serial.print("Fan: ");
-
-  // teste
-  /*Serial.println("OFF");
-  lcd.print("OFF");
-  digitalWrite(ledCooling, LOW);
-  digitalWrite(ledStabilized, LOW);*/
   
   temp_regulator ();
 
