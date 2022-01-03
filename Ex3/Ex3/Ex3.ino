@@ -10,6 +10,7 @@ Servo motor;
 
 IRrecv receiver(receiver_pin);
 decode_results output;
+int pos;
 
 void setup()
 {
@@ -23,25 +24,51 @@ void loop()
   if (receiver.decode(&output))
   {
     unsigned int value = output.value;
-    Serial.println(value);  
+    Serial.println(value);
     receiver.resume();
 
-    switch(value)
+    switch (value)
     {
-      case subir: 
-        motor.write(90);
-        delay(15);
+      receiver.resume();
+      
+      case subir:
+        for (pos = 90; pos <= 180 || value == 41055; pos += 1)
+        {
+          motor.write(pos);
+          delay(15);
+        }
         break;
       case descer:
-        motor.write(0);
+        descerServo(motor);
         delay(15);
         break;
-       case parar:
+      case parar:
         motor.detach();
         break;
     }
-    
-    
+
   }
-    
+
+}
+
+void subirServo(Servo motor)
+{
+  int pos;
+
+  for (pos = 90; pos <= 180; pos += 1)
+  {
+    motor.write(pos);
+    delay(15);
+  }
+}
+
+void descerServo(Servo motor)
+{
+  int pos;
+
+  for (pos = 180; pos >= 90; pos -= 1)
+  {
+    motor.write(pos);
+    delay(15);
+  }
 }
