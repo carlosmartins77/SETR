@@ -32,11 +32,7 @@ void loop()
       receiver.resume();
       
       case subir:
-        for (pos = 90; pos <= 180 || value == 41055; pos += 1)
-        {
-          motor.write(pos);
-          delay(15);
-        }
+        subirServo(motor);
         break;
       case descer:
         descerServo(motor);
