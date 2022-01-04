@@ -7,20 +7,27 @@
 
 int receiver_pin = 11;
 Servo motor;
+int pos;
+int buttonPin = 3;
+int state = 0;
+unsigned long lastInterrupt;
 
 IRrecv receiver(receiver_pin);
 decode_results output;
-int pos;
+
 
 void setup()
 {
   Serial.begin(9600);
   receiver.enableIRIn();
   motor.attach(9);
+  pinMode(buttonPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(buttonPin), suspender, HIGH);
 }
 
 void loop()
 {
+  
   if (receiver.decode(&output))
   {
     unsigned int value = output.value;
@@ -29,42 +36,42 @@ void loop()
 
     switch (value)
     {
-      receiver.resume();
-      
+        receiver.resume();
+
       case subir:
-        subirServo(motor);
+      
+        for (pos = 90; pos <= 180; pos += 1)
+        {
+            motor.write(pos);
+            delay(15);
+        }
         break;
+      
       case descer:
-        descerServo(motor);
-        delay(15);
+        for (pos = 180; pos >= 90; pos -= 1)
+        {
+          motor.write(pos);
+          delay(15);
+        }
         break;
+      
       case parar:
-        motor.detach();
+        //motor.detach();
+    //attachInterrupt(receiver_pin, teste, CHANGE);
         break;
     }
 
   }
-
 }
 
-void subirServo(Servo motor)
-{
-  int pos;
+void suspender() {
+   
+  state = !state;
+    Serial.println(state);
+    if (state == 1)
+        motor.detach();
+    else
+        motor.attach(9);
 
-  for (pos = 90; pos <= 180; pos += 1)
-  {
-    motor.write(pos);
-    delay(15);
-  }
-}
-
-void descerServo(Servo motor)
-{
-  int pos;
-
-  for (pos = 180; pos >= 90; pos -= 1)
-  {
-    motor.write(pos);
-    delay(15);
-  }
+//motor.attach(9);
 }
