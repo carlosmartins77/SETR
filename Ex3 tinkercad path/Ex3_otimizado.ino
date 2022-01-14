@@ -7,7 +7,7 @@
 
 int receiver_pin = 11; // IR Sensor
 Servo motor; // Servo
-int pos; // Posiçao para o SERVO (Usada para definir a velocidade do servo)
+int pos = 180; // Posiçao para o SERVO (Usada para definir a velocidade do servo)
 
 int buttonPin = 3; // Botao suspender movimento
 unsigned long lastInterrupt;
@@ -38,6 +38,7 @@ void setup()
   receiver.enableIRIn();
   /* ---- */
   
+  motor.write(pos);
   motor.attach(9); //Ligar o SERVO à porta 9
   pinMode(buttonPin, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(buttonPin), suspender, FALLING);
