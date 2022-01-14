@@ -69,6 +69,12 @@ void suspender() {
 void subirBarra(int position)
 {
   if (pos != 180) {
+
+    if (position >= 0)
+      pos = position;
+    else
+      pos = 0;
+
     for (pos = 0; pos <= 180; pos += 1)
     {
       motor.write(pos);
