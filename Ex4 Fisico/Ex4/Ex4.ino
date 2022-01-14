@@ -5,8 +5,12 @@ int buzzer = 10;
 int ledPin = 13;
 int buttonPin = 6;
 
-int status = 1;
+// Estado do sistema, se estiver 1 significa que está ligado e o alarme está ativo
+// se tiver 0 o sistema está desligado e o alarme está desativado
+int status = 1; 
+// Estado do botão, se tiver HIGH é porque foi pressionado para interromper o alarme
 int buttonStatus = LOW;
+// Estado do alarme, se estiver 1 é porque o alarme foi disparado
 int alarmStatus = 0;
 
 int LED1_state = LOW; // Definir o estado do led no inicio do programa para LOW
@@ -30,8 +34,6 @@ void setup() {
 }
 
 void loop() {
-  /* The following trigPin/echoPin cycle is used to determine the
-    distance of the nearest object by bouncing soundwaves off of it. */
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
 
@@ -40,10 +42,6 @@ void loop() {
 
   buttonStatus = digitalRead(buttonPin);
 
-  Serial.println("------");
-  Serial.println(status);
-  Serial.println(alarmStatus);
-  Serial.println("------");
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
@@ -53,14 +51,13 @@ void loop() {
   //Calcular a distancia (em cm) baseada na velocidade do som
   distance = duration / 58.2;
 
+  // Se o alarme estiver ativo e for detetado algum objeto/pessoa a menos que 200 cm
+  // o alarme dispara
   if (status == 1) {
-    if (distance <= 50 && distance > 2 || alarmStatus == 1) {
-      Serial.println("entrou");
-      Serial.println(distance);
-      Serial.println(alarmStatus);
-      //delay(99999999);
+    if (distance <= 200 && distance > 2 || alarmStatus == 1) {
       alarmStatus = 1;
 
+      // utilizado no multitasking, verifica se esta na fatia de tempo do led para piscar
       if (currentTime - ledTime > intervalLed) {
         LED1_state = !LED1_state;
         digitalWrite(ledPin, LED1_state);
@@ -68,21 +65,20 @@ void loop() {
         ledTime = currentTime;
       }
       
+      // utilizado no multitasking, verifica se esta na fatia de tempo do buzzer para ativar
       if (currentTime - buzzerTime > intervalBuzzer) {
         tone(buzzer, 1000, 100);
         delay(200);
         tone(buzzer, 800, 200);
         noTone(buzzer);
 
-        Serial.println("WIWIWIWWIWIWI");
-
         buzzerTime = currentTime;
       }
     }
   }
- if (buttonStatus == HIGH) {
-    Serial.println("button");
-    Serial.println(status);
+
+  // Se o botão for pressionado desliga o alarme
+  if (buttonStatus == HIGH) {
     status = !status;
 
     if (status == 0) {
@@ -94,10 +90,9 @@ void loop() {
   }
   // Se tiverem passados 10segundos e o botao clicado tiver sido clicado
   if (alarmTime >= 10000 || buttonStatus == HIGH) {
-      digitalWrite(ledPin, LOW); // Desliga o led
+    digitalWrite(ledPin, LOW); // Desliga o led
     noTone(buzzer); // Desliga o buzzer
   }
 
-  //Delay 50ms before next reading.
   delay(50);
 }

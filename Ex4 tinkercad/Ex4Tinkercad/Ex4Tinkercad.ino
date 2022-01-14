@@ -4,9 +4,15 @@ int buzzer = 10;
 int ledPin = 13;
 int buttonPin = 6;
 
-int status = 1;
+// Estado do sistema, se estiver 1 significa que está ligado e o alarme está ativo
+// se tiver 0 o sistema está desligado e o alarme está desativado
+int status = 1; 
+// Estado do botão, se tiver HIGH é porque foi pressionado para interromper o alarme
 int buttonStatus = LOW;
+// Estado do alarme, se estiver 1 é porque o alarme foi disparado
 int alarmStatus = 0;
+// Estado do pir, o valor é HIGH quando deteta movimento
+int verifica;
 
 int LED1_state = LOW; // Definir o estado do led no inicio do programa para LOW
 int BUZZER_state = LOW; // Definir o estado do buzzer  no inicio do programa para LOW
@@ -34,35 +40,25 @@ void loop() {
   buttonStatus = digitalRead(buttonPin);
   verifica = digitalRead(pirSensor);
 
-  Serial.println("VERIFICA:");
-  Serial.println(verifica);
-
-  Serial.println("------");
-  Serial.println(status);
-  Serial.println(alarmStatus);
-  Serial.println(buttonStatus);
-  Serial.println("------");
-
+  // Se o alarme estiver ativo e for detetado movimento
+  // o alarme dispara
   if (status == 1) {
     if (verifica == HIGH || alarmStatus == 1) {
-      Serial.println("entrou");
-      Serial.println(alarmStatus);
-      //delay(99999999);
       alarmStatus = 1;
 
+      // utilizado no multitasking, verifica se esta na fatia de tempo do led para piscar
       if (currentTime - ledTime > intervalLed) {
         LED1_state = !LED1_state;
         digitalWrite(ledPin, LED1_state);
 
         ledTime = currentTime;
       }
+      // utilizado no multitasking, verifica se esta na fatia de tempo do buzzer para ativar
       if (currentTime - buzzerTime > intervalBuzzer) {
         tone(buzzer, 1000, 100);
         delay(200);
         tone(buzzer, 800, 200);
         noTone(buzzer);
-
-        Serial.println("WIWIWIWWIWIWI");
 
         buzzerTime = currentTime;
       }
@@ -70,9 +66,8 @@ void loop() {
     }
   }
 
-  if (buttonStatus == HIGH) { // Se o botão tiver sido carregado
-    Serial.println("button");
-    Serial.println(status);
+  // Se o botão for pressionado desliga o alarme
+  if (buttonStatus == HIGH) {
     status = !status;
 
     if (status == 0) {
@@ -87,6 +82,5 @@ void loop() {
     noTone(buzzer); // Desliga o buzzer
   }
 
-  //Delay 50ms before next reading.
   delay(50);
 }
