@@ -33,11 +33,7 @@ void setup() {
   Serial.begin(9600); // Starts the serial communication
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-  
-  // temp >25º liga
-  // temp <20º desliga
+void loop() {  
   
   temp = analogRead(tempPin); // le valor do sensor de temperatura
   
@@ -45,12 +41,14 @@ void loop() {
   temp = temp * 5 / 1024;
   temp = (temp - 0.5) * 100;
   
+  // Escreve no LCD 
   lcd.setCursor(6, 0);
   lcd.print("Fan: ");
   Serial.print("Fan: ");
   
   temp_regulator ();
 
+  // Escreve no LCD 
   lcd.setCursor(6, 1);
   lcd.print(temp, 1);
   Serial.print("Temp: ");
@@ -60,14 +58,27 @@ void loop() {
     
 }
 
+// Funcao responsavel por ligar/desligar os leds vermelho e verde e o motor da ventoinha, mediante a temperatura detetada
+// pelo sensor
 void temp_regulator (){
+  // caso temp > 25º:
+  // - mostra o estado da ventoinha como ON
+  // - liga o led vermelho
+  // - desliga o led verde
+  // - liga a ventoinha
   if (temp > maxTemp) {
     Serial.println("ON ");
     lcd.print("ON ");
     digitalWrite(ledCooling, HIGH);
     digitalWrite(ledStabilized, LOW);
     digitalWrite(motorPin, HIGH);
-  } else if (temp < minTemp) {
+  } 
+  // caso temp < 20º:
+  // - mostra o estado da ventoinha como OFF
+  // - desliga o led vermelho
+  // - liga o led verde
+  // - desliga a ventoinha  
+  else if (temp < minTemp) {
     Serial.println("OFF");
     lcd.print("OFF");
     digitalWrite(ledCooling, LOW);
