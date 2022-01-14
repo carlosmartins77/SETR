@@ -28,7 +28,6 @@ void setup() {
   lcd.begin(16, 2);
   lcd.setCursor(6, 0);
   lcd.print("Fan: ");
-  Serial.print("Fan: ");
   temp_regulator ();
   Serial.begin(9600); // Starts the serial communication
 }
@@ -44,15 +43,12 @@ void loop() {
   // Escreve no LCD 
   lcd.setCursor(6, 0);
   lcd.print("Fan: ");
-  Serial.print("Fan: ");
   
   temp_regulator ();
 
   // Escreve no LCD 
   lcd.setCursor(6, 1);
   lcd.print(temp, 1);
-  Serial.print("Temp: ");
-  Serial.println(temp); 
 
   delay(500);
     
@@ -67,7 +63,6 @@ void temp_regulator (){
   // - desliga o led verde
   // - liga a ventoinha
   if (temp > maxTemp) {
-    Serial.println("ON ");
     lcd.print("ON ");
     digitalWrite(ledCooling, HIGH);
     digitalWrite(ledStabilized, LOW);
@@ -79,13 +74,11 @@ void temp_regulator (){
   // - liga o led verde
   // - desliga a ventoinha  
   else if (temp < minTemp) {
-    Serial.println("OFF");
     lcd.print("OFF");
     digitalWrite(ledCooling, LOW);
     digitalWrite(ledStabilized, HIGH);
     digitalWrite(motorPin, LOW);
   } else {
-    Serial.println("OFF");
     lcd.print("OFF");
     digitalWrite(ledCooling, HIGH);
     digitalWrite(ledStabilized, LOW);

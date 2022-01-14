@@ -35,7 +35,6 @@ void loop() {
 
   unsigned long currentTime = millis();
   alarmTime = millis();
-  Serial.println(alarmTime);
 
   buttonStatus = digitalRead(buttonPin);
   verifica = digitalRead(pirSensor);

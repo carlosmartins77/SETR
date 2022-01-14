@@ -49,7 +49,6 @@ void loop()
   if (receiver.decode(&output))
   {
     unsigned int value = output.value;
-    Serial.println(value);
     receiver.resume();
 
     switch (value)
@@ -73,30 +72,27 @@ void loop()
 void suspender() {
    
   state = !state;
-    Serial.println(state);
-    if (state == 1)
-        motor.detach();
-    else
-        motor.attach(9);
+  if (state == 1)
+      motor.detach();
+  else
+      motor.attach(9);
 
 }
 
 void subirBarra(int position)
 {
-  Serial.println("pos:");
-  Serial.println(pos);
   if (pos != 180) {
     
-  if (position >= 0)
-    pos = position;
-  else
-    pos = 0;
-  
-  for (; pos < 180; pos += 1)
-  {
-    motor.write(pos);
-    delay(15);
-  }
+    if (position >= 0)
+      pos = position;
+    else
+      pos = 0;
+    
+    for (; pos < 180; pos += 1)
+    {
+      motor.write(pos);
+      delay(15);
+    }
   }
     
 }

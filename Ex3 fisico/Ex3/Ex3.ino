@@ -36,7 +36,6 @@ void loop()
   if (receiver.decode(&output))
   {
     unsigned int value = output.value;
-    Serial.println(value);
     receiver.resume();
 
     switch (value)
@@ -59,7 +58,6 @@ void loop()
 void suspender() {
 
   state = !state;
-  Serial.println(state);
   if (state == 1)
     motor.detach();
   else
