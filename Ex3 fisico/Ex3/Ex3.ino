@@ -44,7 +44,7 @@ void loop()
 
       case subir:
 
-        subirBarra();
+        subirBarra(-1);
         break;
 
       case descer:
